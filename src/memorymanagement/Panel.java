@@ -45,6 +45,11 @@ public class Panel extends JFrame implements ActionListener{
     //JScroolPane
     private JScrollPane outputScrollPane = new JScrollPane(outputJTextArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     
+    //Some API related variables
+    private static int pageFrameVolume = 0;
+    private static int pageSizeVolume = 0;
+    private static int[] inputArray;
+    
     public Panel() throws HeadlessException {
         super("Demand Paging");
         GeneralSetting();
@@ -108,8 +113,30 @@ public class Panel extends JFrame implements ActionListener{
         }
     }
     
-    public void runConsole(){
-//        outputJTextArea.setText("debug");
+    private void recordOptionValue(){
+        String[] inputArrayFromString = inputTextField.getText().split(",");
+        inputArray = new int[inputArrayFromString.length];
+        pageFrameVolume = Integer.parseInt(pageFrame.getText());
+        pageSizeVolume = Integer.parseInt(pageSize.getText());
+        for(int i = 0;i < inputArrayFromString.length;i++){
+            inputArray[i] = Integer.parseInt(inputArrayFromString[i]);
+        }
+    }
+    
+    public static int getPageFrame(){
+        return pageFrameVolume;
+    }
+    
+    public static int getPageSize(){
+        return pageSizeVolume;
+    }
+    
+    public static int[] getInputValue(){
+        return inputArray;
+    }
+    
+     public void runConsole(){
+        recordOptionValue();
     }
     
     public static void main(String[] args) {
