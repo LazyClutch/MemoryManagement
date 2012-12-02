@@ -23,7 +23,7 @@ public class Panel extends JFrame implements ActionListener{
     private JPanel optionPanel = new JPanel();
     
     //JLabel
-    private JLabel inputLabel = new JLabel("Input a String of numbers:");
+    private JLabel inputLabel = new JLabel("Update Information");
     private JLabel outputLabel = new JLabel("Console:");
     private JLabel LRULabel = new JLabel("Algorithm:LRU");
     private JLabel pageFrameLabel = new JLabel("Page Frame:");
@@ -37,10 +37,10 @@ public class Panel extends JFrame implements ActionListener{
     private JTextArea outputJTextArea = new JTextArea();
     
     //JTextField
-    private JTextField pageFrame = new JTextField("3");
-    private JTextField pageSize = new JTextField("1");
-    private JTextField totalSize = new JTextField("160");
-    private JTextField inputTextField = new JTextField("3,4,1,3,2,5,1,4,2,5,3,1,2");
+    private JTextField pageFrame = new JTextField("4");
+    private JTextField pageSize = new JTextField("10");
+    private JTextField totalSize = new JTextField("320");
+    private JTextField inputTextField = new JTextField();
     
     //JScroolPane
     private JScrollPane outputScrollPane = new JScrollPane(outputJTextArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -48,7 +48,7 @@ public class Panel extends JFrame implements ActionListener{
     //Some API related variables
     private static int pageFrameVolume = 0;
     private static int pageSizeVolume = 0;
-    private static int[] inputArray;
+    private static int totalSizeVolume = 0;
     
     public Panel() throws HeadlessException {
         super("Demand Paging");
@@ -82,7 +82,12 @@ public class Panel extends JFrame implements ActionListener{
         optionPanel.add(pageFrame);
         optionPanel.add(pageSizeLabel);
         optionPanel.add(pageSize);
+        optionPanel.add(totalSizeLabel);
+        optionPanel.add(totalSize);
         optionPanel.add(runButton);
+        pageFrame.setEditable(false);
+        pageSize.setEditable(false);
+        totalSize.setEditable(false);
         runButton.addActionListener(this);
 //        optionPanel.add(totalSizeLabel);
 //        optionPanel.add(totalSize);
@@ -114,13 +119,9 @@ public class Panel extends JFrame implements ActionListener{
     }
     
     private void recordOptionValue(){
-        String[] inputArrayFromString = inputTextField.getText().split(",");
-        inputArray = new int[inputArrayFromString.length];
         pageFrameVolume = Integer.parseInt(pageFrame.getText());
         pageSizeVolume = Integer.parseInt(pageSize.getText());
-        for(int i = 0;i < inputArrayFromString.length;i++){
-            inputArray[i] = Integer.parseInt(inputArrayFromString[i]);
-        }
+        totalSizeVolume = Integer.parseInt(pageSize.getText());
     }
     
     public static int getPageFrame(){
@@ -131,8 +132,8 @@ public class Panel extends JFrame implements ActionListener{
         return pageSizeVolume;
     }
     
-    public static int[] getInputValue(){
-        return inputArray;
+    public static int getTotalSize(){
+        return totalSizeVolume;
     }
     
      public void runConsole(){

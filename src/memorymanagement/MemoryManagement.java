@@ -4,16 +4,55 @@
  */
 package memorymanagement;
 
+import java.util.Random;
+import javax.swing.text.Position;
+
+
 /**
  *
  * @author lenovo
  */
-public class MemoryManagement {
+class Page{
+    //const
+    public final int DIRECTION_SIZE = 320;
+    public final int PAGE_SIZE = 4;
+    
+    //member variables
+    public int[] directions = new int[DIRECTION_SIZE];
+    public boolean[] directionsIsUsed = new boolean[DIRECTION_SIZE];
+    public int[] pages = new int[PAGE_SIZE];
+    public int[] pageUsedTime = new int[PAGE_SIZE];
 
+    public Page() {
+        for(int i = 0;i < DIRECTION_SIZE;i++){
+            directions[i] = i;
+            directionsIsUsed[i] = false;
+        }
+        for(int i = 0;i < PAGE_SIZE;i++){
+            pages[i] = -1;
+            pageUsedTime[i] = 0;
+        }
+    }
+    
+}
+
+public class MemoryManagement {
+    
+    //const
+    public final int DIRECTION_SIZE = 320;
+    public final int PAGE_SIZE = 4;
+    public final int DIRECTION_NEXT = 0;
+    public final int DIRECTION_FORTH = 1;
+    public final int DIRECTION_BACK = 2;
+    
     //System property
     int pageSize;
     int pageFrame;
-    int []inputValue;
+    int totalSize;
+    
+    //Page 
+    Page page = new Page();
+    int timesOfPageChange = 0;
     
     MemoryManagement(){
        
@@ -27,10 +66,38 @@ public class MemoryManagement {
     private void getValuesFromScreen(){
         pageSize = Panel.getPageSize();
         pageFrame = Panel.getPageFrame();
-        inputValue = Panel.getInputValue();
+        totalSize = Panel.getTotalSize();
+    }
+    
+    private boolean isRandomNumberUsed(int randomNumber){
+        return page.directionsIsUsed[randomNumber];
+    }
+    
+    private int randomNumber(int position,int directionOfRandom){
+        Random random = new Random();
+        int randomNumber = random.nextInt(320);
+        if(directionOfRandom == 0 || position == 0){
+            while(isRandomNumberUsed(randomNumber)){
+                randomNumber = random.nextInt(320);
+            }
+        }
+        else if(directionOfRandom == 1){
+            while (isRandomNumberUsed(randomNumber) || randomNumber < position) {                
+                randomNumber = random.nextInt(320);
+            }
+        }
+        else{
+            while (isRandomNumberUsed(randomNumber) || randomNumber > position) {                
+                randomNumber = random.nextInt(320);
+            }
+        }
+        return randomNumber;
     }
     
     private void calculateTheResult(){
-        // TODO:calculate the result
+        int position = 0;
+        while (true) {            
+            position = randomNumber(position,DIRECTION_NEXT);
+        }
     }
 }
