@@ -94,10 +94,94 @@ public class MemoryManagement {
         return randomNumber;
     }
     
+    private void updatePageUsedTime(int pageNumber){
+        for(int i = 0;i < PAGE_SIZE;i++){
+            if(pageNumber == i ){
+                page.pageUsedTime[i] = 0;
+            }else if(page.pages[i] != -1){
+                page.pageUsedTime[i]++;
+            }
+        }
+    }
+    
+    private void pageSelect(int position){
+       int isAllPageInUse = isAllPageUsed(); 
+       if(isAllPageInUse > 0){
+           page.pages[isAllPageInUse] = position / 32 + 1;
+           updatePageUsedTime(isAllPageInUse);
+       }else{
+           int mostUsedPage = searchForLeastUsedPage();
+           if (page.pages[mostUsedPage] == (position / 32 + 1)) {
+               updatePageUsedTime(mostUsedPage);
+           }
+           else{
+               page.pages[mostUsedPage] = position / 32 + 1;
+               updatePageUsedTime(mostUsedPage);
+           }
+       }
+    }
+    
+    private int isAllPageUsed(){
+        for(int i = 0;i < PAGE_SIZE;i++){
+            if(page.pages[i] == -1){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
+    private int searchForLeastUsedPage(){
+        int leastUsedPageNumber = -1;
+        for(int i = 0;i < PAGE_SIZE;i++){
+            if (page.pageUsedTime[i] > leastUsedPageNumber) {
+                leastUsedPageNumber = i;
+            }
+        }
+        return leastUsedPageNumber;
+    }
+    
+    private int setNextPage(int position){
+        for(int i = position + 1;i < DIRECTION_SIZE;i++){
+            if(page.directionsIsUsed[i] == false){
+                return i;
+            }
+        }
+        for(int i = position - 1;i > 0;i++){
+            if(page.directionsIsUsed[i] == false){
+                return i;
+            }
+        }
+        return -1;
+    }
+    
     private void calculateTheResult(){
         int position = 0;
         while (true) {            
             position = randomNumber(position,DIRECTION_NEXT);
+            if(position < 0){
+                break;
+            }
+            pageSelect(position);
+            position = setNextPage(position);
+            if(position < 0){
+                break;
+            }
+            pageSelect(position);
+            position = randomNumber(position, DIRECTION_BACK);
+            if(position < 0){
+                break;
+            }
+            pageSelect(position);
+            position = setNextPage(position);
+            if(position < 0){
+                break;
+            }
+            pageSelect(position);
+            position = randomNumber(position, DIRECTION_FORTH);
+            if(position < 0){
+                break;
+            }
+            pageSelect(position);
         }
     }
 }
