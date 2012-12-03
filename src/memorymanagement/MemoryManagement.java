@@ -125,24 +125,33 @@ public class MemoryManagement {
     }
     
     private void pageSelect(int position){
-       int isAllPageInUse = isAllPageUsed(); 
-       if(isAllPageInUse > 0){
-           page.pages[isAllPageInUse] = position / 32 + 1;
-           updatePageUsedTime(isAllPageInUse);
-           Panel.printPage(position,page.pages,false);
-       }else{
-           int mostUsedPage = searchForLeastUsedPage();
-           if (page.pages[mostUsedPage] == (position / 32 + 1)) {
-               updatePageUsedTime(mostUsedPage);
-               Panel.printPage(position, page.pages, false);
-           }
-           else{
-               page.pages[mostUsedPage] = position / 32 + 1;
-               updatePageUsedTime(mostUsedPage);
-               timesOfPageChange++;
-               Panel.printPage(position, page.pages, true);
-           }
-       }
+        int isAllPageInUse = isAllPageUsed(); 
+        int equalValue = hasAnEqualValue(position / 32 + 1);
+        if (equalValue >= 0) {
+            updatePageUsedTime(pageSize);
+            Panel.printPage(position,page.pages,false);
+        }else{
+            if(isAllPageInUse >= 0){
+                page.pages[isAllPageInUse] = position / 32 + 1;
+                updatePageUsedTime(isAllPageInUse);
+                Panel.printPage(position,page.pages,false);
+            }else{       
+                int mostUsedPage = searchForLeastUsedPage();
+                page.pages[mostUsedPage] = position / 32 + 1;
+                updatePageUsedTime(mostUsedPage);
+                timesOfPageChange++;
+                Panel.printPage(position, page.pages, true);
+            }
+        }     
+    }
+    
+    private int hasAnEqualValue(int position){
+        for(int i = 0;i < PAGE_SIZE;i++){
+            if(page.pages[i] == position) {
+                return i;
+            }
+        }
+        return -1;
     }
     
     private int isAllPageUsed(){
