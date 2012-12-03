@@ -34,13 +34,13 @@ public class Panel extends JFrame implements ActionListener{
     private JButton runButton = new JButton("Run");
     
     //JTextArea
-    private JTextArea outputJTextArea = new JTextArea();
+    private static JTextArea outputJTextArea = new JTextArea();
     
     //JTextField
     private JTextField pageFrame = new JTextField("4");
     private JTextField pageSize = new JTextField("10");
     private JTextField totalSize = new JTextField("320");
-    private JTextField inputTextField = new JTextField();
+    private static JTextField outputTextField = new JTextField();
     
     //JScroolPane
     private JScrollPane outputScrollPane = new JScrollPane(outputJTextArea,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -99,14 +99,14 @@ public class Panel extends JFrame implements ActionListener{
         //outputPanel.add(outputJTextArea, BorderLayout.CENTER);
         outputJTextArea.setLineWrap(true);
         outputJTextArea.setWrapStyleWord(true);
-        outputJTextArea.setEditable(false);
+        outputJTextArea.setEditable(true);
         outputPanel.add(outputScrollPane,BorderLayout.CENTER);
         add(outputPanel,BorderLayout.CENTER);
         
         BorderLayout inputLayout = new BorderLayout();
         inputPanel.setLayout(inputLayout);
         inputPanel.add(inputLabel,BorderLayout.WEST);
-        inputPanel.add(inputTextField,BorderLayout.CENTER);
+        inputPanel.add(outputTextField,BorderLayout.CENTER);
         add(inputPanel,BorderLayout.SOUTH);
     }
     
@@ -136,10 +136,52 @@ public class Panel extends JFrame implements ActionListener{
         return totalSizeVolume;
     }
     
-     public void runConsole(){
-        recordOptionValue();
+    private void printHeadDescription(){
+        String space = "                    ";
+        outputJTextArea.append("LRU ALGORITHM:\n");
+        outputJTextArea.append("Directions" + space + "Frame1" + space + "Frame2" + space + "Frame3" + space + "Frame4" + space + "\n");
     }
     
+    private void initial(){
+        outputJTextArea.setText(null);
+        outputTextField.setText(null);
+    }
+    
+    public void runConsole(){
+        initial();
+        recordOptionValue();
+        printHeadDescription();
+        console.PageDemand();
+    }
+    
+     static void printPage(int position,int[] pages,boolean isPageChange){
+         
+         //  36 69 102 135
+         int page = position / 32 + 1;
+         String pageToString = String.valueOf(page);
+         String newLine = "";
+         newLine += "" + position + "[" + pageToString + "]";
+         for(int i = 0; i < 4;i++){
+             newLine += printSpace(36 + i*33 - newLine.length()) + pages[i];
+         }
+         newLine += "\n";
+         outputJTextArea.append(newLine);
+     }
+     
+     static void printRatio(int changeTimes,float changeRatio){
+         String consoleInformation = "";
+         consoleInformation += "Times of losing pages:" + changeTimes + "       " + "Ratio of changing pages:" + changeRatio;
+         outputTextField.setText(consoleInformation);
+     }
+     
+     private static String printSpace(int number){
+         String space = "";
+         for(int i = 0;i < number;i++){
+             space += " ";
+         }
+         return space;
+     }
+     
     public static void main(String[] args) {
         Panel panel = new Panel();
     }

@@ -34,6 +34,17 @@ class Page{
         }
     }
     
+    public void initial(){
+        for(int i = 0;i < DIRECTION_SIZE;i++){
+            directions[i] = i;
+            directionsIsUsed[i] = false;
+        }
+        for(int i = 0;i < PAGE_SIZE;i++){
+            pages[i] = -1;
+            pageUsedTime[i] = 0;
+        }
+    }
+    
 }
 
 public class MemoryManagement {
@@ -46,21 +57,30 @@ public class MemoryManagement {
     public final int DIRECTION_BACK = 2;
     
     //System property
-    int pageSize;
-    int pageFrame;
-    int totalSize;
+    private int pageSize;
+    private int pageFrame;
+    private int totalSize;
     
     //Page 
-    Page page = new Page();
-    int timesOfPageChange = 0;
+    private Page page = new Page();
+    private static int timesOfPageChange = 0;
+    private static int allChanges = 0;
     
     MemoryManagement(){
        
     }
     
     public void PageDemand(){
+        initial();
         getValuesFromScreen();
         calculateTheResult();
+        calculateTheRatio();
+    }
+    
+    public void initial(){
+        page.initial();
+        timesOfPageChange = 0;
+        allChanges = 0;
     }
     
     private void getValuesFromScreen(){
@@ -109,14 +129,18 @@ public class MemoryManagement {
        if(isAllPageInUse > 0){
            page.pages[isAllPageInUse] = position / 32 + 1;
            updatePageUsedTime(isAllPageInUse);
+           Panel.printPage(position,page.pages,false);
        }else{
            int mostUsedPage = searchForLeastUsedPage();
            if (page.pages[mostUsedPage] == (position / 32 + 1)) {
                updatePageUsedTime(mostUsedPage);
+               Panel.printPage(position, page.pages, false);
            }
            else{
                page.pages[mostUsedPage] = position / 32 + 1;
                updatePageUsedTime(mostUsedPage);
+               timesOfPageChange++;
+               Panel.printPage(position, page.pages, true);
            }
        }
     }
@@ -158,30 +182,39 @@ public class MemoryManagement {
         int position = 0;
         while (true) {            
             position = randomNumber(position,DIRECTION_NEXT);
-            if(position < 0){
+            if(allChanges == 320){
                 break;
             }
             pageSelect(position);
+            allChanges++;
             position = setNextPage(position);
-            if(position < 0){
+            if(allChanges == 320){
                 break;
             }
             pageSelect(position);
+            allChanges++;
             position = randomNumber(position, DIRECTION_BACK);
-            if(position < 0){
+            if(allChanges == 320){
                 break;
             }
             pageSelect(position);
+            allChanges++;
             position = setNextPage(position);
-            if(position < 0){
+            if(allChanges == 320){
                 break;
             }
             pageSelect(position);
+            allChanges++;
             position = randomNumber(position, DIRECTION_FORTH);
-            if(position < 0){
+            if(allChanges == 320){
                 break;
             }
             pageSelect(position);
+            allChanges++;
         }
+    }
+    private void calculateTheRatio(){
+        float pageRatio = (float)timesOfPageChange / DIRECTION_SIZE;
+        Panel.printRatio(timesOfPageChange,pageRatio);
     }
 }
