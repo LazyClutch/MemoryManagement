@@ -19,14 +19,12 @@ class Page{
     
     //member variables
     public int[] directions = new int[DIRECTION_SIZE];
-    public boolean[] directionsIsUsed = new boolean[DIRECTION_SIZE];
     public int[] pages = new int[PAGE_SIZE];
     public int[] pageUsedTime = new int[PAGE_SIZE];
 
     public Page() {
         for(int i = 0;i < DIRECTION_SIZE;i++){
             directions[i] = i;
-            directionsIsUsed[i] = false;
         }
         for(int i = 0;i < PAGE_SIZE;i++){
             pages[i] = -1;
@@ -37,7 +35,6 @@ class Page{
     public void initial(){
         for(int i = 0;i < DIRECTION_SIZE;i++){
             directions[i] = i;
-            directionsIsUsed[i] = false;
         }
         for(int i = 0;i < PAGE_SIZE;i++){
             pages[i] = -1;
@@ -86,14 +83,10 @@ public class MemoryManagement {
         totalSize = Panel.getTotalSize();
     }
     
-    private boolean isRandomNumberUsed(int randomNumber){
-        return page.directionsIsUsed[randomNumber];
-    }
-    
     private void randomNumber(){
         int count = directionNotChange();
         while(count < DIRECTION_SIZE / 2){
-            for(int i = 0;i < 80 - count/2;i++){
+            for(int i = 0;i < DIRECTION_SIZE / 4 - count/2;i++){
                 Random random = new Random();
                 int randomNumber1 = random.nextInt(DIRECTION_SIZE);
                 int randomNumber2 = random.nextInt(DIRECTION_SIZE);

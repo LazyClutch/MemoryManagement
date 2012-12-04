@@ -93,6 +93,7 @@ public class Panel extends JFrame implements ActionListener{
 //        optionPanel.add(totalSize);
         add(optionPanel,BorderLayout.NORTH);
         
+
         BorderLayout outputLayout = new BorderLayout();
         outputPanel.setLayout(outputLayout);
         outputPanel.add(outputLabel,BorderLayout.WEST);
@@ -139,7 +140,7 @@ public class Panel extends JFrame implements ActionListener{
     private void printHeadDescription(){
         String space = "                    ";
         outputJTextArea.append("LRU ALGORITHM:\n");
-        outputJTextArea.append("Directions" + space + "Frame1" + space + "Frame2" + space + "Frame3" + space + "Frame4" + space + "\n");
+        outputJTextArea.append("Directions" + space + "Frame1" + space + "Frame2" + space + "Frame3" + space + "Frame4" + space + "Page Change\n");
     }
     
     private void initial(){
@@ -163,7 +164,7 @@ public class Panel extends JFrame implements ActionListener{
          for(int i = 0; i < 4;i++){
              newLine += printSpace(36 + i*33 - newLine.length()) + pages[i];
          }
-         newLine += "\n";
+         newLine += printSpace(36 + 4*33 - newLine.length()) + String.valueOf(isPageChange) + "\n";
          outputJTextArea.append(newLine);
      }
      
