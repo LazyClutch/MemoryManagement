@@ -154,8 +154,7 @@ public class Panel extends JFrame implements ActionListener{
         console.PageDemand();
     }
     
-     static void printPage(int position,int[] pages,boolean isPageChange){
-         
+     static void printPage(int position,int[] pages,boolean isPageChange){ 
          //  36 69 102 135
          int page = position / 32 + 1;
          String pageToString = String.valueOf(page);

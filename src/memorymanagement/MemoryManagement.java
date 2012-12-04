@@ -91,15 +91,31 @@ public class MemoryManagement {
     }
     
     private void randomNumber(){
-        for(int i = 0;i < 80;i++){
-            Random random = new Random();
-            int randomNumber1 = random.nextInt(160);
-            int randomNumber2 = 319 - random.nextInt(160);
-            int temp = page.directions[randomNumber1];
-            page.directions[randomNumber1] = page.directions[randomNumber2];
-            page.directions[randomNumber2] = temp;
-            
+        int count = directionNotChange();
+        while(count < DIRECTION_SIZE / 2){
+            for(int i = 0;i < 80 - count/2;i++){
+                Random random = new Random();
+                int randomNumber1 = random.nextInt(DIRECTION_SIZE);
+                int randomNumber2 = random.nextInt(DIRECTION_SIZE);
+                if(randomNumber1 != randomNumber2){
+                    int temp = page.directions[randomNumber1];
+                    page.directions[randomNumber1] = page.directions[randomNumber2];
+                    page.directions[randomNumber2] = temp; 
+                }                    
+            }
+            count = directionNotChange();
         }
+        
+    }
+    
+    private int directionNotChange(){
+        int count = 0;
+        for(int i = 0;i < DIRECTION_SIZE;i++){
+            if(page.directions[i] != i){
+                count++;
+            }
+        }
+        return count;
     }
     
     private void updatePageUsedTime(int pageNumber){
@@ -162,26 +178,7 @@ public class MemoryManagement {
         }
         return leastUsedPageNumber;
     }
-    
-    private int setNextPage(int position){
-        try {
-            for(int i = position + 1;i < DIRECTION_SIZE;i++){
-                if(page.directionsIsUsed[i] == false){
-                    page.directionsIsUsed[i] = true;
-                    return i;
-                }
-            }
-            for(int i = position - 1;i >= 0;i--){
-                if(page.directionsIsUsed[i] == false){
-                    page.directionsIsUsed[i] = true;
-                    return i;
-                }
-            }
-        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
-            System.out.println(e.getMessage());
-        }
-         return -1;
-    }
+
     
     private void calculateTheResult(){
         randomNumber();
