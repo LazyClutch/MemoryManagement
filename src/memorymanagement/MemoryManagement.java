@@ -52,9 +52,6 @@ public class MemoryManagement {
     //const
     public final int DIRECTION_SIZE = 320;
     public final int PAGE_SIZE = 4;
-    public final int DIRECTION_NEXT = 0;
-    public final int DIRECTION_FORTH = 1;
-    public final int DIRECTION_BACK = 2;
     
     //System property
     private int pageSize;
@@ -93,25 +90,16 @@ public class MemoryManagement {
         return page.directionsIsUsed[randomNumber];
     }
     
-    private int randomNumber(int position,int directionOfRandom){
-        Random random = new Random();
-        int randomNumber = random.nextInt(320);
-        if(directionOfRandom == 0 || position == 0){
-            while(isRandomNumberUsed(randomNumber)){
-                randomNumber = random.nextInt(320);
-            }
+    private void randomNumber(){
+        for(int i = 0;i < 80;i++){
+            Random random = new Random();
+            int randomNumber1 = random.nextInt(160);
+            int randomNumber2 = 319 - random.nextInt(160);
+            int temp = page.directions[randomNumber1];
+            page.directions[randomNumber1] = page.directions[randomNumber2];
+            page.directions[randomNumber2] = temp;
+            
         }
-        else if(directionOfRandom == 1){
-            while (isRandomNumberUsed(randomNumber) || randomNumber < position) {                
-                randomNumber = random.nextInt(320);
-            }
-        }
-        else{
-            while (isRandomNumberUsed(randomNumber) || randomNumber > position) {                
-                randomNumber = random.nextInt(320);
-            }
-        }
-        return randomNumber;
     }
     
     private void updatePageUsedTime(int pageNumber){
@@ -165,61 +153,40 @@ public class MemoryManagement {
     
     private int searchForLeastUsedPage(){
         int leastUsedPageNumber = -1;
+        int leastUsedTime = -1;
         for(int i = 0;i < PAGE_SIZE;i++){
-            if (page.pageUsedTime[i] > leastUsedPageNumber) {
+            if (page.pageUsedTime[i] > leastUsedTime) {
                 leastUsedPageNumber = i;
+                leastUsedTime = page.pageUsedTime[i];
             }
         }
         return leastUsedPageNumber;
     }
     
     private int setNextPage(int position){
-        for(int i = position + 1;i < DIRECTION_SIZE;i++){
-            if(page.directionsIsUsed[i] == false){
-                return i;
+        try {
+            for(int i = position + 1;i < DIRECTION_SIZE;i++){
+                if(page.directionsIsUsed[i] == false){
+                    page.directionsIsUsed[i] = true;
+                    return i;
+                }
             }
-        }
-        for(int i = position - 1;i > 0;i++){
-            if(page.directionsIsUsed[i] == false){
-                return i;
+            for(int i = position - 1;i >= 0;i--){
+                if(page.directionsIsUsed[i] == false){
+                    page.directionsIsUsed[i] = true;
+                    return i;
+                }
             }
+        } catch (java.lang.ArrayIndexOutOfBoundsException e) {
+            System.out.println(e.getMessage());
         }
-        return -1;
+         return -1;
     }
     
     private void calculateTheResult(){
-        int position = 0;
-        while (true) {            
-            position = randomNumber(position,DIRECTION_NEXT);
-            if(allChanges == 320){
-                break;
-            }
-            pageSelect(position);
-            allChanges++;
-            position = setNextPage(position);
-            if(allChanges == 320){
-                break;
-            }
-            pageSelect(position);
-            allChanges++;
-            position = randomNumber(position, DIRECTION_BACK);
-            if(allChanges == 320){
-                break;
-            }
-            pageSelect(position);
-            allChanges++;
-            position = setNextPage(position);
-            if(allChanges == 320){
-                break;
-            }
-            pageSelect(position);
-            allChanges++;
-            position = randomNumber(position, DIRECTION_FORTH);
-            if(allChanges == 320){
-                break;
-            }
-            pageSelect(position);
-            allChanges++;
+        randomNumber();
+        for(int i: page.directions){
+            pageSelect(i);
         }
     }
     private void calculateTheRatio(){
